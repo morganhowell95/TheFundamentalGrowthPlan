@@ -1,6 +1,6 @@
 //A queue is a First In First Out (FIFO) data structure
 //Java gives a much more in-depth perspective for the array implementation of both the queue and stack
-public class ArrayImplOfQueue<T> {
+public class ArrayImplOfQueue<T> implements Queue<T> {
 	private T[] q;
 	private int totalSize;
 	private int headIndex;
@@ -24,6 +24,7 @@ public class ArrayImplOfQueue<T> {
 	* @param1: data to be inputted
 	* @rvalue: boolean denoting the success of the insertion
 	*/
+	@Override
 	public boolean enqueue(T data) {
 		if(!isFull()){
 			//taking the tail index modulo total size allows us to "wrap around" the fixed size array
@@ -41,6 +42,7 @@ public class ArrayImplOfQueue<T> {
 	*
 	* @rvalue: data at the "front" or head of the list (remember FIFO ds)
 	*/
+	@Override
 	public T dequeue() {
 		if(isEmpty()){
 			return null;
@@ -57,6 +59,7 @@ public class ArrayImplOfQueue<T> {
 	 *
 	 * @rvalue: data at the "front" or head of the list 
 	 */
+	@Override
 	public T peek(){
 		if(isEmpty()) {
 			return null;
@@ -69,6 +72,7 @@ public class ArrayImplOfQueue<T> {
 	 * We know the entire array has been filled if adding one more to the head brings us to the same index as the tail
 	 *
 	 */
+	@Override
 	public boolean isFull() {
 		return ((headIndex%totalSize) == (tailIndex%totalSize)+1);
 	}
@@ -78,6 +82,7 @@ public class ArrayImplOfQueue<T> {
 	 *We know the array is empty if that tail index is equal to the head index
 	 *
 	 */
+	@Override
 	public boolean isEmpty() {
 		return (headIndex == tailIndex);
 	}
