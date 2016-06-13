@@ -65,7 +65,7 @@ public class LLImplOfStack<T> implements Stack<T> {
 	 */
 	@Override
 	public boolean isEmpty() {
-		return (head == null);
+		return head == null;
 	}
 
 	/* Check to see if the list is full, shouldn't happen anytime soon with the linked list implementation */
@@ -117,10 +117,6 @@ public class LLImplOfStack<T> implements Stack<T> {
                 if(s.peek()!=98) {
                         throw new Exception();
                 }
-
-		while(!s.isEmpty()) {
-			s.pop();
-		}
 
                 System.out.println("Stack works exactly as expected, but you should write some better testers.");
         }

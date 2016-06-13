@@ -39,9 +39,6 @@ public class LLImplOfQueue<T> implements Queue<T> {
 		} else {
 			T data = (T) head.getData();
 			head = head.getNext();
-			if(head == null) {
-				tail = null;
-			}
 			return data;
 		}
 	}
@@ -135,10 +132,6 @@ public class LLImplOfQueue<T> implements Queue<T> {
 		if(!q.dequeue().equals("1hello")) {
                         throw new Exception();
                 }
-
-		while(!q.isEmpty()){
-			String data = q.dequeue();
-		}
 
                 System.out.println("Queue works as expected, nice job!");
 
