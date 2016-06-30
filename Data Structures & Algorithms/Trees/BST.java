@@ -1,20 +1,19 @@
 /* Standard implementation of a binary search tree (BST) with insert, search, and delete operations that all run in O(lgn) time */
 public class BST<T extends Comparable<T>> {
-	private Node<T> root;
+	public Node<T> root;
 	
 	public BST() {
-		root = null;
+		this.root = null;
 	}
 
 	//insert data element while maintaining BST order properties
 	public void insert(T data) {
-		insert(data, root);
+		insert(data, this.root);
 	}
 
 	public void insert(T data, Node<T> root) {
-
 		if(root == null) {
-			root = new Node<T>(data);
+			this.root = new Node<T>(data);
 		} else if(root.data.compareTo(data) > 0) {
 			//if element being inserted is smaller, drill into left subtree
 			if(root.lc != null) {
@@ -53,80 +52,40 @@ public class BST<T extends Comparable<T>> {
 
 	//delete first find of the target value, returns deleted node if found otherwise returns null; doing it iteratively for practice
 	//but recursively (just as we did before) is also a fine approach
-	public Node<T> deleteValue(T data) {
-		boolean isComplete = false;
-		boolean isLeftOfParent = false;
-		Node<T> currentNode = root;
-		Node<T> nodeToDelete = null;
+	public Node<T> delete(T data) {
+		return delete(this.root, data);
+	}
 
-		//find parent of node we're going to delete
-		while(!isComplete) {
-			if(currentNode.data.compareTo(data) > 0) {
-				//if current node is bigger than target, search left subtree
-				if(currentNode == null) {
-					return null;
-				} else if(currentNode.lc.data == data) {
-					nodeToDelete = currentNode.lc;
-					isComplete = true;
-					isLeftOfParent = true;
-				} else {
-					currentNode = currentNode.lc
-				}
 
-			} else if(currentNode.data.compareTo(data) < 0) {
-				//if current node is less than target, search right subtree
-				if(currentNode == null) {
-					return null;
-				} else if(currentNode.rc.data == data) {
-					nodeToDelete = currentNode.rc;
-					isComplete = true;
-				} else {
-					currentNode = currentNode.rc;
-				}
-			}
-		}
+	private Node<T> delete(Node<T> root, T data) {
 
-		//case 1: the node to be delete has no children
-		if((nodeToDelete.lc == null) && (nodeToDelete.rc==null)) {
-			if(isLeftOfParent) {
-				currentNode.lc = null;
+		if(root == null) {
+			return null;
+		} else if(root.data.compareTo(data) > 0) {
+			root.lc = delete(root.lc, data);
+		} else if(root.data.compareTo(data) < 0) {
+			root.rc = delete(root.rc, data);
+
+		//we have found root containing data
+		} else {
+			//case 1: node has no children
+			if(root.rc == null && root.lc == null) {
+				root = null;
+			//case 2: node has one child
+			} else if (root.rc == null) {
+				root = root.lc;
+			} else if(root.lc == null) {
+				root = root.rc;
+			//case 3: node has two children
 			} else {
-				currentNode.rc = null;
+				//equally valid to have also found the successor (smallest node of right subtree)
+				Node<T> pred = findPredecessor(root);
+				root.data = pred.data;
+				root.lc = delete(root.lc, pred.data);
 			}
-		}
 
-		//case 2: the node to delete has one child, keep in mind that "^" is XOR in Java
-		if( (nodeToDelete.lc != null) ^ (nodeToDelete.rc != null) ) {
-			if(isLeftOfParent) {
-				currentNode.lc = (nodeToDelete.lc != null) ? nodeToDelete.lc : nodeToDelete.rc;
-			} else {	
-				currentNode.rc = (nodeToDelete.lc != null) ? nodeToDelete.lc : nodeToDelete.rc;
-			}
 		}
-		
-		
-		//case 3: the node to delete has two children
-		//This case can be especially tricky, but by finding the predecessor (or sucessor) 
-		if((nodeToDelete.lc!= null) && (nodeToDelete.rc!=null)) {
-			Node<T> predecessor = findPredecessor(nodeToDelete);
-			if(isLeftOfParent) {
-				currentNode.lc = predecessor;
-				Node<T> leftSubOfPred = predecessor.lc;
-				predecessor.lc = nodeToDelete.lc;
-				//predecessor by definition is guaranteed to not have a right subtree
-				predecessor.rc = nodeToDelete.rc;
-				//place predecessor's old (potential) left subtree as the right subtree of Pred's new left subtree
-				predecessor.lc.rc = leftSubOfPred;
-			} else {
-				currentNode.rc = predecessor;
-				Node<T> leftSubOfPred = predecessor.lc;
-				predecessor.rc = nodeToDelete.rc;
-				predecessor.lc = nodeToDelete.lc;
-				predecessor.lc.rc = leftSubOfPred;
-			}
-		}
-		
-		return nodeToDelete;
+		return root;
 	}
 
 	//node must have both a left and right subtree, returns null if this condition is not met
@@ -141,8 +100,21 @@ public class BST<T extends Comparable<T>> {
 			return null;
 		}
 	}
+	
+	//print nodes in-order 
+	public void printInOrder(Node<T> node){
+		if(node.lc != null) {
+			printInOrder(node.lc);
+		}
 
-	public class Node<T extends Comparable<T>> implements Comparable<T>{
+		System.out.println(node.data);
+
+		if(node.rc != null) {
+			printInOrder(node.rc);
+		}
+	}
+
+	public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 		public Node<T> lc;
 		public Node<T> rc;
 		public T data;
@@ -159,5 +131,26 @@ public class BST<T extends Comparable<T>> {
 		}
 	}
 
-
+	public static void main(String[] args) {
+		//Example from: https://en.wikipedia.org/wiki/Tree_traversal
+		BST<Integer> bst = new BST<Integer>();
+		bst.insert(15);
+		bst.insert(10);
+		bst.insert(4);
+		bst.insert(13);
+		bst.insert(12);
+		bst.insert(14);
+		bst.insert(25);
+		bst.insert(22);
+		bst.insert(17);
+		bst.insert(27);
+		bst.insert(30);
+		bst.insert(29);
+		bst.insert(31);
+		bst.insert(26);
+		bst.printInOrder(bst.root);
+		System.out.println("\n\n\n -------------- after 25 deletion:---------------  \n\n\n");
+		bst.delete(25);
+		bst.printInOrder(bst.root);
+	}
 }
