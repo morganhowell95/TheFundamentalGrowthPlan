@@ -73,6 +73,26 @@ public class GraphSearch {
 				graph.makeWDEdge("z","s", 7);
 				graph.makeWDEdge("z","x", 6);
 				break;
+			
+			//good example to practice Bellman-Ford single-source shortest path algorithm, works fine with negative edges (CLRS pg.652)
+			case 4:
+				graph.clearGraph();
+				graph.insert("s");
+				graph.insert("t");
+				graph.insert("y");
+				graph.insert("x");
+				graph.insert("z");
+				graph.makeWDEdge("s","t", 6);
+				graph.makeWDEdge("s","y", 7);
+				graph.makeWDEdge("t","y", 8);
+				graph.makeWDEdge("t","x", 5);
+				graph.makeWDEdge("t","z", -4);
+				graph.makeWDEdge("y","x", -3);
+				graph.makeWDEdge("y","z", 9);
+				graph.makeWDEdge("x","t", -2);
+				graph.makeWDEdge("z","s", 2);
+				graph.makeWDEdge("z","x", 7);
+				break;
 		}
 
 	}
@@ -187,6 +207,43 @@ public class GraphSearch {
 		}
 	}
 
+	//Bellman-Ford accomplishes the same thinga s Dijktra with less effeciency, however it can handle negative cycles
+	//We iterate over every edge V-1 times, so the final worst case anaylsis is O(VE)
+	public void bellmanFordSP(String source) throws Exception {
+		Vertex v = graph.adjList.get(source);
+		v.weight = 0;
+
+		for(int i=0; i<graph.adjList.size()-1; i++) {
+			System.out.println("\n------------------------------\n round:" + (i+1) + "\n");
+			for(Vertex vert: graph.adjList.values()) {
+				System.out.print("vertex " + vert.label + " weight " + vert.weight + "   ");
+				for(Edge e: vert.adjVertices) {
+					relaxv2(e);
+				}
+			}
+			System.out.println("\n-----------------------------------------------------------------------\n");
+
+		}
+
+		//ensure that no negative cost cycles are present
+		for(Vertex vert: graph.adjList.values()) {
+			for(Edge e: vert.adjVertices) {
+				if(relaxv2(e)) {
+					throw new Exception("Presence of a negative cost cycle in our graph.");
+				}
+			}
+		}
+	}
+
+	public boolean relaxv2(Edge e) {
+		if(e.v2.weight > e.v1.weight + e.weight) {
+			e.v2.weight = e.v1.weight + e.weight;
+			e.v2.parent = e.v1;
+			return true;
+		}
+		return false;
+	}
+
 
 	public class Graph {
 		public HashMap<String, Vertex> adjList;
@@ -252,6 +309,7 @@ public class GraphSearch {
 			parent = null;
 		}
 
+
 		public String toString() {
 			return label;
 		}
@@ -300,7 +358,7 @@ public class GraphSearch {
 	}
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		GraphSearch g = new GraphSearch();
 		g.generateNewGraphOfType(1);
 		g.outputDFSOfCurrentGraph("u");
@@ -311,6 +369,10 @@ public class GraphSearch {
 		g.generateNewGraphOfType(3);
 		g.dijkstraSP("s");
 		g.printShortestPath("x","s");
+		System.out.println("\n\n-----------------------------\n\n");
+		g.generateNewGraphOfType(4);
+		g.bellmanFordSP("s");
+		g.printShortestPath("z","s");
 		System.out.println("\n\n-----------------------------\n\n");
 	}
 }
