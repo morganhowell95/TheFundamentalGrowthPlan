@@ -1,6 +1,9 @@
 import java.util.HashMap;
 import java.util.Arrays;
 
+//Given an array of numbers return the k most frequent numbers in better than O(nlgn) time
+
+
 public class KMostFrequentIntegers {
     public List<Integer> topKFrequent(int[] nums, int k) {
         HashMap<Integer, Integer> ht = new HashMap<Integer, Integer>();
