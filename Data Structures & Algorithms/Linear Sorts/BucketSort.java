@@ -1,4 +1,4 @@
-//Bucket sort is a non-comparison algorithm that takes advantage of the distribution of the given data set to make sorting happen in O(n+k) average time, where k is the number of buckets created
+//Bucket sort is a sorting algorithm that takes advantage of the distribution of the given data set to make sorting happen in O(n+k) average time, where k is the number of buckets created
 //The sorting algo is meant to work with numbers that are uniformly distributed (randomly) over [0,1)
 import java.util.Arrays;
 
