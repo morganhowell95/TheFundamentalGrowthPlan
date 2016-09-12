@@ -1,3 +1,4 @@
+//Counting sort is a linear sorting algorithm that works in O(n) time efficiency and O(n+k) space efficiency, where k is the range of input
 import java.util.Arrays;
 
 public class CountingSort {
